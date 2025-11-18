@@ -14,159 +14,179 @@ using namespace std;
 const int domysl = -10000;
 const int dlugNumeruTelefonu = 9;
 
-class Osoba {
-private:
-    string imie;
-    string nazwisko;
-    int wiek;
-    string mail;
-    string telefon;
+class Pojazd {
+protected:
+    string marka;
+    string model;
+    double obecna_predkosc;
 public:
     // Konstruktor
-    Osoba(string imi, string nazwisk, int wie)
+    Pojazd(){}
+    Pojazd(string ma, string mo)
     {
-        imie=imi;
-        nazwisko=nazwisk;
-        wiek=wie;
-        mail="";
-        telefon="";
+        marka = ma;
+        model = mo;
     }
+    virtual ~Pojazd()
+    {
 
+    }
     // Gettery
-    string get_imie() const
-    {
-        return imie;
-    }
-    string get_nazwisko() const
-    {
-        return nazwisko;
-    }
-    int get_wiek() const
-    {
-        return wiek;
-    }
-    string get_mail() const
-    {
-        return mail;
-    }
-    string get_telefon()  const
-    {
-        return telefon;
-    }
 
     // Settery
-    void set_imie(string nowe)
-    {
-        imie=nowe;
-    }
-    void set_nazwisko(string nowe)
-    {
-        nazwisko=nowe;
-    }
-    void set_wiek(int nowy)
-    {
-        wiek=nowy;
-    }
-    void set_mail(string nowy)
-    {
-        for (int i=0; i<nowy.length(); i++)
-        {
-            if(nowy[i]=='@')
-            {
-                mail=nowy;
-            }
-        }
-        if(mail!=nowy)
-        {
-            cout<<"\nb³êdny mail - brak @\n";
-        }
-    }
-    void set_telefon(string nowy)
-    {
-        if (nowy.length()==dlugNumeruTelefonu)
-        {
-            telefon=nowy;
-        }
-        else
-        {
-            cout<<"\nb³êdna d³ugoœæ numeru\n";
-        }
-    }
 
-    // Sprawdzenie poprawnoœci wieku
-
-    // Metoda wyœwietlaj¹ca dane
-
+    virtual void przyspiesz()
+    {}
+    void zatrzymaj()
+    {
+        obecna_predkosc=0;
+    }
 };
 
-class Pracownik{
+class Rower
+ : public Pojazd
+{
+    public:
+    Rower()
+        : Pojazd()
+    {
+        obecna_predkosc=0;
+    }
+    Rower(string ma, string mo)
+        : Pojazd(ma, mo)
+    {
+        obecna_predkosc=0;
+    }
+    ~Rower()
+    {}
+    void przyspiesz()
+    {
+        obecna_predkosc+=5;
+        cout<<"prÄ™dkoÅ›Ä‡(roweru: "<<marka<<" "<<model<<") = "<<obecna_predkosc<<"\n";
+    }
+};
+
+class Samochod
+ : protected Pojazd
+// : private Pojazd
+{
+    public:
+    Samochod()
+        : Pojazd()
+    {
+        obecna_predkosc=0;
+    }
+    Samochod(string ma, string mo)
+        : Pojazd(ma, mo)
+    {
+        obecna_predkosc=0;
+    }
+    ~Samochod()
+    {}
+    void przyspiesz()
+    {
+        obecna_predkosc+=10;
+        cout<<"prÄ™dkoÅ›Ä‡(samochodu: "<<marka<<" "<<model<<") = "<<obecna_predkosc<<"\n";
+    }
+};
+
+class Silnikowy
+ : virtual public Pojazd
+{
 protected:
-    string stanowisko;
-    float wynagrodzenie;
-
+    //double obecna_predkosc;
 public:
-    Pracownik(string s, float wyn)
-    {
-        stanowisko=s;
-        wynagrodzenie=wyn;
-    }
-    // Metoda wyœwietlaj¹ca stanowisko (dostêpna tylko dla klas dziedzicz¹cych)
+    Silnikowy()
+    : Pojazd(){}
+    ~Silnikowy(){}
 
+    virtual void przyspiesz()
+    {
+        obecna_predkosc+=10;
+        cout<<obecna_predkosc<<"\n";
+    }
 };
 
-class Nauczyciel
- : public Pracownik
+class Elektryczny
+ : virtual public Pojazd
 {
-    public:
-    Nauczyciel(string s, float wyn)
-        : Pracownik(s, wyn)
+protected:
+    double akumulator;
+public:
+    Elektryczny()
+    : Pojazd(){}
+    ~Elektryczny(){}
+
+    virtual void ladowanie()
+    {
+        akumulator+=10;
+        cout<<akumulator<<"\n";
+    }
+};
+
+class Hybryda
+: public Silnikowy, Elektryczny
+{
+public:
+    Hybryda()
+        : Silnikowy(), Elektryczny()
     {}
-    void pokazDane()
+
+    void przyspiesz()
     {
-        cout<<stanowisko<<" "<<wynagrodzenie;
+        obecna_predkosc+=10;
+        cout<<obecna_predkosc<<"\n";
+        ladowanie();
     }
 };
 
-class Administracja
- : public Pracownik
+class ElektrycznySamochod
+: public Samochod
 {
-    public:
-    Administracja(string s, float wyn)
-        : Pracownik(s, wyn)
-    {}
-    void pokazDane()
+public:
+    void przyspiesz()
     {
-        cout<<stanowisko<<" "<<wynagrodzenie;
+        obecna_predkosc+=15;
+         cout<<"prÄ™dkoÅ›Ä‡(samochodu elektrycznego "/*<<marka<<" "<<model<<") = "*/<<obecna_predkosc<<"\n";
     }
 };
 
-void z1()
+void z1_2_3_5_6()
 {
-    Osoba geniusz("Waldo", "Schaeffer", 45);
-    cout<<geniusz.get_imie()<<" "<<geniusz.get_nazwisko()<<" "<<geniusz.get_wiek();
-    geniusz.set_imie("Franz");
-    geniusz.set_nazwisko("Hopper");
-    geniusz.set_wiek(54);
-    cout<<geniusz.get_imie()<<" "<<geniusz.get_nazwisko()<<" "<<geniusz.get_wiek();
+    Rower sklad("minikon", "skÅ‚adak");
+    Samochod autocie("truckkun", "Optimus Prime");
+
+    sklad.przyspiesz();
+    sklad.przyspiesz();
+    sklad.zatrzymaj();
+    sklad.przyspiesz();
+    //cout<<sklad.marka<<" "<<autocie.model;
+
+    autocie.przyspiesz();
+    autocie.przyspiesz();
+    //autocie.zatrzymaj();
+    autocie.przyspiesz();
+    //cout<<autocie.marka<<" "<<autocie.model;
+    //nie ma dostrzegalnej rÃ³Å¼nicy miÄ™dzy private i protected dla atrybutÃ³w protected i klas public, jak jest u mnie
 }
 
 
-void z2()
+void z7_9_10()
 {
-    Osoba geniusz("Waldo", "Schaeffer", 45);
-    string mail, telefon;
-    cin>>mail>>telefon;
-    geniusz.set_mail(mail);
-    geniusz.set_telefon(telefon);
-    cout<<geniusz.get_imie()<<" "<<geniusz.get_nazwisko()<<" "<<geniusz.get_wiek()<<geniusz.get_mail()<<geniusz.get_telefon();
+    Silnikowy diesel;
+    Elektryczny tesla;
+    Hybryda hyundai;
+    ElektrycznySamochod tes;
+
+    diesel.przyspiesz();
+    tesla.przyspiesz();
+    hyundai.przyspiesz();
+    tes.przyspiesz();
 }
 
 void z3()
 {
-    Administracja Leciej("dyrektor", 6125.23);
-    Nauczyciel Wilczynska("matematyczka", 4784.98);
-    Leciej.pokazDane();
-    Wilczynska.pokazDane();
+
 }
 
 int main()
@@ -175,24 +195,17 @@ int main()
     while (kont == "T" || kont == "t")
     {
         int odp;
-        cout << "Wybierz zadanie do aktywacji:";
+        cout << "Wybierz zestaw zadaÅ„ do aktywacji:\n1 - 1,2,3,5\n2 - 7\n";
         cin >> odp;
         switch (odp)
         {
         case 1:
-            cout << "Zadanie 1\n";
-            z1();
+            cout << "Zadanie 1,2,3,5,6\n";
+            z1_2_3_5_6();
             break;
         case 2:
-            cout << "Zadanie 2\n";
-            z2();
-            break;
-        case 3:
-            cout << "Zadanie 3\n";
-            //cout<<2.0/3.0;
-            //cout<<findRepeatingSequence(4, 9)<<"\n";
-            //cout<<findRepeatingSequence(27, 33)<<"\n";
-            z3();
+            cout << "Zadanie 7_10\n";
+            z7_9_10();
             break;
         }
         cout << "Czy chcesz kontynuacji?(T/N)";
